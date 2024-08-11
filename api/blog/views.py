@@ -14,6 +14,11 @@ class BlogView(APIView):
         return Response(serializer.data)
     
     def post(self, request):
+        user = request.user
+        request.data['author']=user.id
+        if user.is_authenticated:
+            if not int(request.data.get('author'))==int(request.user.id):
+                return Response({'error': 'You are not authorized to create a blog'}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = BlogSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
