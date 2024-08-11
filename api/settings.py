@@ -40,8 +40,10 @@ INSTALLED_APPS = [
     # 3rd party
     "rest_framework",
     # Local Apps
-    "api.users",
-    "api.admin",
+    "api",
+    "api.account",
+    "api.blog",
+    "api.core",
 ]
 
 MIDDLEWARE = [
