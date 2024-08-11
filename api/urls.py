@@ -1,10 +1,7 @@
-from django.contrib import admin
-from django.urls import include, path
-from rest_framework import routers
-from api.account.views import RegisterView,LoginView
-
+from django.urls import path, include
 
 urlpatterns = [
-  path("register/", RegisterView.as_view(), name="register"),
-  path("login/",LoginView.as_view(),name="login")
+    path('account/', include('api.account.urls')),
+    # Assuming you have a blog application, uncomment the following line:
+    # path('blog/', include('api.blog.urls')),
 ]

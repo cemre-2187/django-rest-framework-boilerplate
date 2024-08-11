@@ -3,7 +3,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
+'''
+Serializer for registering a new user with first name, last name, username, email, and password. 
+Validates if the email and username are unique. 
+Creates a new User instance with the validated data and saves it to the database.
+'''
 class RegisterSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(max_length=255, min_length=3)
     last_name = serializers.CharField(max_length=255, min_length=3)
@@ -37,6 +41,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+'''
+Serializer for user login with username and password.
+Validates the username and checks if the user exists in the database.
+Generates a JWT token for the authenticated user and returns it along with a success message.
+'''
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=255, write_only=True)
