@@ -4,18 +4,26 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Blog
 from .serializers import BlogSerializer
 from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class BlogView(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
-        blogs = Blog.objects.all()
+        #add search query
+        search = request.query_params.get('search', None)
+        if search:
+            blogs = Blog.objects.filter(title__icontains=search)
+        else:
+            blogs = Blog.objects.all()
         serializer = BlogSerializer(blogs, many=True)
         return Response(serializer.data)
     
     def post(self, request):
         user = request.user
         request.data['author']=user.id
+        print(request.data.user.id)
         if user.is_authenticated:
             if not int(request.data.get('author'))==int(request.user.id):
                 return Response({'error': 'You are not authorized to create a blog'}, status=status.HTTP_401_UNAUTHORIZED)
