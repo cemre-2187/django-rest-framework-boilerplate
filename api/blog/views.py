@@ -5,6 +5,8 @@ from .models import Blog
 from .serializers import BlogSerializer
 from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from .models import Category
+from .serializers import CategorySerializer
 
 class BlogView(APIView):
     permission_classes = [IsAuthenticated]
@@ -28,6 +30,22 @@ class BlogView(APIView):
             if not int(request.data.get('author'))==int(request.user.id):
                 return Response({'error': 'You are not authorized to create a blog'}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = BlogSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CategoryView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
