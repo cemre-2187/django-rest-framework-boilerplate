@@ -24,3 +24,10 @@ class Blog(BaseModel):
 
     class Meta:
         ordering = ['-created_at']
+
+class Category(BaseModel):
+    name = models.CharField(max_length=200)
+    blogs = models.ManyToManyField(Blog, related_name='categories')
+
+    def __str__(self):
+        return self.name
