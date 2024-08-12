@@ -46,6 +46,9 @@ class CategoryView(APIView):
     
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
+        # check is user admin
+        if not request.user.is_staff:
+            return Response({'error': 'You are not authorized to create a category'}, status=status.HTTP_401_UNAUTHORIZED)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
