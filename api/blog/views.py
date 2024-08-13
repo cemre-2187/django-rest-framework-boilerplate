@@ -21,7 +21,7 @@ class BlogView(BaseAPIView):
         else:
             blogs = Blog.objects.all()
         serializer = BlogSerializer(blogs, many=True)
-        return Response(serializer.data)
+        return self.success_response(data=serializer.data, message="Blogs fetched successfully")
     
     def post(self, request):
         user = request.user
@@ -29,28 +29,28 @@ class BlogView(BaseAPIView):
         print(request.data.user.id)
         if user.is_authenticated:
             if not int(request.data.get('author'))==int(request.user.id):
-                return Response({'error': 'You are not authorized to create a blog'}, status=status.HTTP_401_UNAUTHORIZED)
+                return self.error_response(message="You are not authorized to create a blog", status_code=status.HTTP_401_UNAUTHORIZED)
         serializer = BlogSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return self.success_response(data=serializer.data, message="Blog created successfully")
+        return self.error_response(message="Blog creation failed", status_code=status.HTTP_400_BAD_REQUEST)
     
-class CategoryView(APIView):
+class CategoryView(BaseAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)
-        return Response(serializer.data)
+        return self.success_response(data=serializer.data, message="Categories fetched successfully")
     
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
         # check is user admin
         if not request.user.is_staff:
-            return Response({'error': 'You are not authorized to create a category'}, status=status.HTTP_401_UNAUTHORIZED)
+            return self.error_response(message="You are not authorized to create a category", status_code=status.HTTP_401_UNAUTHORIZED)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return self.success_response(data=serializer.data, message="Category created successfully")
+        return self.error_response(message="Category creation failed", status_code=status.HTTP_400_BAD_REQUEST)

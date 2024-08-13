@@ -6,4 +6,5 @@ class BaseAPIView(APIView, APIViewResponseMixin):
     Create a base API view that combines APIView and APIViewResponseMixin
     Custom API View to handle all the common logic for all APIs
     """
+    print("Cemre")
     pass
