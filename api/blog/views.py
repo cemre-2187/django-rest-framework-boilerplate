@@ -6,9 +6,10 @@ from .serializers import BlogSerializer,CategorySerializer
 from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Category
+from api.core.views import BaseAPIView
 
 
-class BlogView(APIView):
+class BlogView(BaseAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
