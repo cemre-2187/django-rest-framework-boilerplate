@@ -26,7 +26,7 @@ class BlogView(BaseAPIView):
     def post(self, request):
         user = request.user
         request.data['author']=user.id
-        print(request.data.user.id)
+        print(request.user)
         if user.is_authenticated:
             if not int(request.data.get('author'))==int(request.user.id):
                 return self.failure_response(message="You are not authorized to create a blog", status_code=status.HTTP_401_UNAUTHORIZED)
@@ -49,6 +49,7 @@ class CategoryView(BaseAPIView):
     
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
+        print(request.user)
         # check is user admin
         if not request.user.is_staff:
             return self.failure_response(message="You are not authorized to create a category", status_code=status.HTTP_401_UNAUTHORIZED)
