@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Category
 from api.core.views import BaseAPIView
+from django.core.cache import cache
 
 
 class BlogView(BaseAPIView):
@@ -43,13 +44,20 @@ class CategoryView(BaseAPIView):
     authentication_classes = [JWTAuthentication]
 
     def get(self, request):
-        categories = Category.objects.all()
-        serializer = CategorySerializer(categories, many=True)
+        cache_key = "categories"
+        cached_categories = cache.get(cache_key)
+        if cached_categories is None:
+            categories = Category.objects.all()
+            serializer = CategorySerializer(categories, many=True)
+            cache.set(cache_key, serializer.data, timeout=3600)
+        else:
+            serializer = CategorySerializer(cached_categories, many=True)
         return self.success_response(data=serializer.data, message="Categories fetched successfully")
     
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
-        print(request.user)
+        #reset cache
+        cache.delete("categories")
         # check is user admin
         if not request.user.is_staff:
             return self.failure_response(message="You are not authorized to create a category", status_code=status.HTTP_401_UNAUTHORIZED)
