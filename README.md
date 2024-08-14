@@ -1,2 +1,7 @@
-# django-rest-framework-boilerplate
-Django Rest Framework Boilerplate 
+#TODOS
+ - Error handling
+ - Logging
+ - Testing
+ - Dockerization
+ - CI/CD pipeline
+ - Documentation

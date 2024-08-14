@@ -9,7 +9,9 @@ from .models import Category
 from api.core.views import BaseAPIView
 from django.core.cache import cache
 
-
+'''
+API view for handling blog operations with authentication and authorization support.
+'''
 class BlogView(BaseAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
@@ -38,7 +40,10 @@ class BlogView(BaseAPIView):
                 return self.success_response(data=serializer.data, message="Blog created successfully")
         except Exception as e:
             return self.failure_response(message="Blog creation failed", data=e.detail, status_code=status.HTTP_400_BAD_REQUEST)
-    
+   
+'''
+API view for handling categories with authentication and caching support.
+''' 
 class CategoryView(BaseAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
