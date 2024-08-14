@@ -20,12 +20,12 @@ class RegisterView(BaseAPIView):
             serializer = RegisterSerializer(data=request.data)
             
             if not serializer.is_valid(raise_exception=True):
-                return self.error_response(message="User creation failed", status_code=status.HTTP_400_BAD_REQUEST)
+                return self.failure_response(message="User creation failed", status_code=status.HTTP_400_BAD_REQUEST)
             
             serializer.save()
             return self.success_response(message="User created successfully", status_code=status.HTTP_201_CREATED)
         except Exception as e:
-            return self.error_response(message="User creation failed", status_code=status.HTTP_400_BAD_REQUEST)
+            return self.failure_response(message="User creation failed", status_code=status.HTTP_400_BAD_REQUEST)
         
 
 '''
@@ -42,13 +42,13 @@ class LoginView(BaseAPIView):
         try:
             serializer = LoginSerializer(data=request.data)
             if not serializer.is_valid(raise_exception=True):
-                return self.error_response(message="Login failed", status_code=status.HTTP_400_BAD_REQUEST)
+                return self.failure_response(message="Login failed", status_code=status.HTTP_400_BAD_REQUEST)
             
             response = serializer.get_jwt_token(request.data)
            
             if(response['message']=='Invalid credentials'):
-                return self.error_response(message="Login failed", status_code=status.HTTP_400_BAD_REQUEST)
+                return self.failure_response(message="Login failed", status_code=status.HTTP_400_BAD_REQUEST)
 
             return self.success_response(message="Login successful",data=response, status_code=status.HTTP_200_OK)
         except Exception as e:
-            return self.error_response(message="Login failed", status_code=status.HTTP_400_BAD_REQUEST)
+            return self.failure_response(message="Login failed", status_code=status.HTTP_400_BAD_REQUEST)

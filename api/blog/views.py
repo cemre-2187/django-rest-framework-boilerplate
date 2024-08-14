@@ -29,12 +29,14 @@ class BlogView(BaseAPIView):
         print(request.data.user.id)
         if user.is_authenticated:
             if not int(request.data.get('author'))==int(request.user.id):
-                return self.error_response(message="You are not authorized to create a blog", status_code=status.HTTP_401_UNAUTHORIZED)
+                return self.failure_response(message="You are not authorized to create a blog", status_code=status.HTTP_401_UNAUTHORIZED)
         serializer = BlogSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response(data=serializer.data, message="Blog created successfully")
-        return self.error_response(message="Blog creation failed", status_code=status.HTTP_400_BAD_REQUEST)
+        try:
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return self.success_response(data=serializer.data, message="Blog created successfully")
+        except Exception as e:
+            return self.failure_response(message="Blog creation failed", data=e.detail, status_code=status.HTTP_400_BAD_REQUEST)
     
 class CategoryView(BaseAPIView):
     permission_classes = [IsAuthenticated]
@@ -49,8 +51,10 @@ class CategoryView(BaseAPIView):
         serializer = CategorySerializer(data=request.data)
         # check is user admin
         if not request.user.is_staff:
-            return self.error_response(message="You are not authorized to create a category", status_code=status.HTTP_401_UNAUTHORIZED)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response(data=serializer.data, message="Category created successfully")
-        return self.error_response(message="Category creation failed", status_code=status.HTTP_400_BAD_REQUEST)
+            return self.failure_response(message="You are not authorized to create a category", status_code=status.HTTP_401_UNAUTHORIZED)
+        try:
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return self.success_response(data=serializer.data, message="Category created successfully")
+        except Exception as e:
+            return self.failure_response(message="Category creation failed",data=e.detail , status_code=status.HTTP_400_BAD_REQUEST)

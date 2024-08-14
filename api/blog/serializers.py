@@ -14,3 +14,6 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         exclude = ['created_at', 'updated_at']
+    
+    def validate(self, attrs):
+        return super().validate(attrs)
