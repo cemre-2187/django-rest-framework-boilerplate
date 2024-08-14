@@ -18,6 +18,7 @@ class Blog(BaseModel):
     content = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blogs')
     image = models.ImageField(upload_to='blogs', blank=True, null=True)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='blogs', null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -27,7 +28,6 @@ class Blog(BaseModel):
 
 class Category(BaseModel):
     name = models.CharField(max_length=200)
-    blogs = models.ManyToManyField(Blog, related_name='categories')
 
     def __str__(self):
         return self.name
