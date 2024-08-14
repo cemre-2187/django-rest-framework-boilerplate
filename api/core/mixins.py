@@ -18,7 +18,6 @@ class APIViewResponseMixin:
           "status_code": status_code,
           "status": cls.SUCCESS
         }
-        print('cemre2222')
         if message is not None:
             response_data["message"] = message
         if data is not None:
