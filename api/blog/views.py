@@ -8,6 +8,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Category
 from api.core.views import BaseAPIView
 from django.core.cache import cache
+from api.core.services import StatsService
 
 '''
 API view for handling blog operations with authentication and authorization support.
@@ -28,8 +29,6 @@ class BlogView(BaseAPIView):
     
     def post(self, request):
         user = request.user
-        request.data['author']=user.id
-        print(request.user)
         if user.is_authenticated:
             if not int(request.data.get('author'))==int(request.user.id):
                 return self.failure_response(message="You are not authorized to create a blog", status_code=status.HTTP_401_UNAUTHORIZED)
@@ -72,3 +71,14 @@ class CategoryView(BaseAPIView):
                 return self.success_response(data=serializer.data, message="Category created successfully")
         except Exception as e:
             return self.failure_response(message="Category creation failed",data=e.detail , status_code=status.HTTP_400_BAD_REQUEST)
+        
+        
+class StatsView(BaseAPIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request):
+        # Example service call. You can use services for cleaner code in views. 
+        # It changes according to your project structure. If your views has complex logics, you can use services.
+        stats = StatsService.get_stats()
+        return self.success_response(data=stats, message="Stats fetched successfully")
