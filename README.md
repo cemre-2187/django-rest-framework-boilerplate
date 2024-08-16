@@ -1,7 +1,5 @@
 #TODOS
- - Services layer
  - Repository layer
- 
  - Enviroment management
  - Error handling
  - Logging
