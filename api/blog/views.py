@@ -20,6 +20,7 @@ class BlogView(BaseAPIView):
     def get(self, request):
         #add search query
         search = request.query_params.get('search', None)
+
         if search:
             blogs = Blog.objects.filter(title__icontains=search)
         else:

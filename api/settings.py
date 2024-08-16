@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-dbj&k%xhao$c1(+qemkc11kejz96j9%%uz8x3gc#az1cykyzih
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -144,13 +144,12 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'EXCEPTION_HANDLER': 'api.core.middleware.custom_exception_handler',
     'PAGE_SIZE': 10
 }
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",  # Redis sunucunuzun adresini ve portunu belirtin
+        "LOCATION": "redis://127.0.0.1:6379/1",  
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

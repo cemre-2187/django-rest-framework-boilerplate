@@ -4,13 +4,16 @@ from .models import ErrorLog
 from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework import status
+from django.http import JsonResponse
+from django.conf import settings
 
 class LogErrorsMiddleware(MiddlewareMixin):
     def process_exception(self, request, exception):
-        error_message = ''.join(traceback.format_exception(None, exception, exception.__traceback__))
+        print('exception', exception)
+        error_message = exception.__str__()
         error_type = type(exception).__name__
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-
+       
         if isinstance(exception, APIException):
             status_code = exception.status_code
 
@@ -19,10 +22,19 @@ class LogErrorsMiddleware(MiddlewareMixin):
             error_type=error_type,
             status_code=status_code,
         )
-
-        # Custom error response
-        response_data = {
+        # If it is DEBUG mode, return the exception. If not retun a generic error message
+        if settings.DEBUG:
+            response_data = {
+            "status_code": status_code,
             "error": error_type,
             "message": str(exception),
-        }
-        return Response(response_data, status=status_code)
+             }
+            return JsonResponse(response_data, status=status_code)
+        else:
+            response_data = {
+            "status_code": status_code,
+            "error": "Unexpected Error",
+            "message": "An unexpected error occurred. Please try again later.",
+             }
+            return JsonResponse(response_data, status=status_code)
+      
