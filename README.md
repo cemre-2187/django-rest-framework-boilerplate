@@ -1,6 +1,5 @@
 #TODOS
  - Repository layer
- - Enviroment management
  - Error handling
  - Logging
  - Testing
