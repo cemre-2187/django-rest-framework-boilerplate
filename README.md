@@ -1,6 +1,7 @@
 #TODOS
+ -req validitaion
  - Repository layer
- - Error handling
+ - Error handling(Will continue from here. I shoul check essays)
  - Logging
  - Testing
  - Dockerization

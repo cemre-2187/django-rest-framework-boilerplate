@@ -22,7 +22,7 @@ class LogErrorsMiddleware(MiddlewareMixin):
             error_type=error_type,
             status_code=status_code,
         )
-        # If it is DEBUG mode, return the exception. If not retun a generic error message
+        # If it is DEBUG mode, return the exception. If not return a generic error message
         if settings.DEBUG:
             response_data = {
             "status_code": status_code,

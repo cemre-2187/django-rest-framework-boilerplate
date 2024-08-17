@@ -21,12 +21,16 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'username', 'email', 'password']
 
     def validate(self, attrs):
+        if not attrs['email'].count('@') > 0 or not attrs['email'].count('.') > 0:
+            raise serializers.ValidationError(
+                {"email": "Please enter a valid email address"})
         if User.objects.filter(email=attrs['email']).exists():
             raise serializers.ValidationError(
                 {"email": "A user with this email already exists."})
         if User.objects.filter(username=attrs['username']).exists():
             raise serializers.ValidationError(
                 {"username": "A user with this username already exists."})
+   
         return attrs
 
     def create(self, validated_data):
