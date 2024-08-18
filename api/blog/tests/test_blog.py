@@ -24,12 +24,18 @@ def blog_data(test_user, test_category):
         "category": test_category.name
     }
 
+@pytest.fixture
+def get_access_token(client, test_user):
+    url = reverse('api.account:login')
+    response = client.post(url, {'username': 'testuser', 'password': 'testpass'})
+    assert response.status_code == 200
+    return response.data['access']
+
 @pytest.mark.django_db
 class TestBlogAPI:
 
-    def test_get_blogs(self, client, test_user, test_category):
-        #first login
-        client.login(username='testuser', password='testpass')
+    def test_get_blogs(self, client, test_user, test_category,get_access_token):
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
         # Test bloğunu oluşturma
         Blog.objects.create(title="Test Blog", content="This is a test blog content.", author=test_user, category=test_category)
 
@@ -44,7 +50,8 @@ class TestBlogAPI:
         assert len(response.data['data']) == 1
         assert response.data['data'][0]['title'] == "Test Blog"
 
-    def test_create_blog(self, client, test_user, blog_data):
+    def test_create_blog(self, client, test_user, blog_data, get_access_token):
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
         # Kullanıcıyı giriş yapmış gibi ayarla
         client.login(username='testuser', password='testpass')
 
