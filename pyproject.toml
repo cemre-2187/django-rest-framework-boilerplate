@@ -54,6 +54,8 @@ trove-classifiers = "2024.7.2"
 urllib3 = "2.2.2"
 virtualenv = "20.26.3"
 xattr = "1.1.0"
+pytest = "^8.3.2"
+pytest-django = "^4.8.0"
 
 
 [build-system]
