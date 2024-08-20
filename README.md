@@ -1,7 +1,6 @@
 #TODOS
 
  - Repository layer
-
  - Error handling(Will continue from here. I shoul check essays)
  - Testing
  - Dockerization
