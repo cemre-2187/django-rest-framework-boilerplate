@@ -2,6 +2,7 @@ import pytest
 from django.urls import reverse
 from django.contrib.auth.models import User
 from api.blog.models import Blog, Category
+from rest_framework.test import APIClient
 
 @pytest.fixture
 def test_user(db):
@@ -26,21 +27,21 @@ def blog_data(test_user, test_category):
 
 @pytest.fixture
 def get_access_token(client, test_user):
-    url = reverse('api.account:login')
+    url = '/account/login/'
     response = client.post(url, {'username': 'testuser', 'password': 'testpass'})
     assert response.status_code == 200
-    return response.data['access']
+    print(response.data)
+    return response.data['data']['access']
 
 @pytest.mark.django_db
 class TestBlogAPI:
 
     def test_get_blogs(self, client, test_user, test_category,get_access_token):
+        
+        client=APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
         # Test bloğunu oluşturma
         Blog.objects.create(title="Test Blog", content="This is a test blog content.", author=test_user, category=test_category)
-
-        # Kullanıcıyı giriş yapmış gibi ayarla
-        client.login(username='testuser', password='testpass')
 
         # GET isteği gönderme
         response = client.get(reverse('blog'))
@@ -51,10 +52,9 @@ class TestBlogAPI:
         assert response.data['data'][0]['title'] == "Test Blog"
 
     def test_create_blog(self, client, test_user, blog_data, get_access_token):
+        client=APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
-        # Kullanıcıyı giriş yapmış gibi ayarla
-        client.login(username='testuser', password='testpass')
-
+        
         # POST isteği gönderme
         response = client.post(reverse('blog'), blog_data)
 
