@@ -12,14 +12,7 @@ def admin_user(db):
     return User.objects.create_superuser(username='admin', password='adminpass')
 
 
-@pytest.fixture
-def blog_data(test_user, test_category):
-    return {
-        "title": "Test Blog",
-        "content": "This is a test blog content.",
-        "author": test_user.id,
-        "category": test_category.name
-    }
+
 
 @pytest.fixture
 def get_access_token(client, test_user):
@@ -32,7 +25,7 @@ def get_access_token(client, test_user):
 @pytest.mark.django_db
 class TestStatsAPI:
 
-    def test_get_stats(self, client):
+    def test_get_stats(self, client,get_access_token):
         client=APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
   
