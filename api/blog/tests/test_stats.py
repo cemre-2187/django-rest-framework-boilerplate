@@ -7,12 +7,6 @@ from rest_framework.test import APIClient
 def test_user(db):
     return User.objects.create_user(username='testuser', password='testpass')
 
-@pytest.fixture
-def admin_user(db):
-    return User.objects.create_superuser(username='admin', password='adminpass')
-
-
-
 
 @pytest.fixture
 def get_access_token(client, test_user):
