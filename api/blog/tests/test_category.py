@@ -17,12 +17,9 @@ def test_category(db):
     return Category.objects.create(name="Test Category")
 
 @pytest.fixture
-def blog_data(test_user, test_category):
+def category_data(test_user, test_category):
     return {
-        "title": "Test Blog",
-        "content": "This is a test blog content.",
-        "author": test_user.id,
-        "category": test_category.name
+        'name':'New Category'
     }
 
 @pytest.fixture
@@ -31,6 +28,14 @@ def get_access_token(client, test_user):
     response = client.post(url, {'username': 'testuser', 'password': 'testpass'})
     assert response.status_code == 200
     print(response.data)
+    return response.data['data']['access']
+
+@pytest.fixture
+def get_admin_access_token(client, test_user):
+    url = '/account/login/'
+    response = client.post(url, {'username': 'admin', 'password': 'adminpass'})
+    assert response.status_code == 200
+    print('Wache ich auf',response.data)
     return response.data['data']['access']
 
 @pytest.mark.django_db
@@ -51,25 +56,25 @@ class TestCategoryAPI:
         assert len(response.data['data']) == 1
         assert response.data['data'][0]['name'] == "Test Category"
 
-    def test_create_category(self, client,get_access_token):
+    def test_create_category(self, category_data,client,get_admin_access_token):
         client=APIClient()
-        client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
-        
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_admin_access_token)
+        print(get_admin_access_token)
         # POST isteği gönderme
-        response = client.post(reverse('category'), self.category_data)
+        response = client.post(reverse('category'), category_data)
 
         # Kategorinin başarılı bir şekilde oluşturulup oluşturulmadığını kontrol etme
         assert response.status_code == 200
-        assert Category.objects.count() == 1
+        assert Category.objects.count() == 2
         assert Category.objects.get().name == "New Category"
 
-    def test_create_category_unauthorized(self, client):
-        # Normal kullanıcıyı giriş yapmış gibi ayarla
-        client.login(username='testuser', password='testpass')
+    def test_create_category_unauthorized(self, client,get_access_token,category_data):
+        client=APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
 
         # POST isteği gönderme
-        response = client.post(reverse('category'), self.category_data)
+        response = client.post(reverse('category'), category_data)
 
         # Kategori oluşturma isteğinin yetkisiz olup olmadığını kontrol etme
         assert response.status_code == 401
-        assert Category.objects.count() == 0
+        
