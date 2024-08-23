@@ -22,3 +22,11 @@ def test_blog(test_user, test_category):
         author=test_user,
         category=test_category
     )
+    
+@pytest.fixture
+def get_access_token(client, test_user):
+    url = '/account/login/'
+    response = client.post(url, {'username': 'testuser', 'password': 'testpass'})
+    assert response.status_code == 200
+    print(response.data)
+    return response.data['data']['access']
