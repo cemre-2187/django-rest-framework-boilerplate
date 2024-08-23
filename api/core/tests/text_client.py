@@ -7,9 +7,14 @@ from rest_framework.test import APIClient
 class BaseTestClient(TestCase):
     def setUp(self):
         self.client = APIClient()
-        # self.test_user, self.test_category, self.test_blog gibi özelliklere
-        # `self` üzerinden erişmek isterseniz, setUp'da elle atayabilirsiniz.
-
+        
+        self.test_user = self._get_fixture('test_user')
+        self.test_category = self._get_fixture('test_category')
+        self.test_blog = self._get_fixture('test_blog')
+        self.admin_user = self._get_fixture('admin_user')
+        self.access_token = self._get_fixture('get_access_token')
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.access_token)
+        
     def tearDown(self):
         # Her testten sonra temiz bir ortam sağlamak için kullanılır.
         pass
