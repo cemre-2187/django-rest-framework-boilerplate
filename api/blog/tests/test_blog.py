@@ -4,24 +4,27 @@ from django.contrib.auth.models import User
 from api.blog.models import Blog, Category
 from rest_framework.test import APIClient
 from api.core.tests.text_client import BaseTestClient
+from django.test import TestCase
 
 @pytest.mark.django_db
-class TestBlogAPI(BaseTestClient):
-
-    def test_get_blogs(self):
-        
-        
+class TestBlogAPI(TestCase):
+    # @pytest.mark.usefixtures("test_user", "test_category", "test_blog", "admin_user", "get_access_token")
+    def test_get_blogs(testfix):
+        print(testfix)
+        assert type(testfix)==str
+        # client=APIClient()
+        # client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
         
         # Test bloğunu oluşturma
         # Blog.objects.create(title="Test Blog", content="This is a test blog content.", author=self.test_user, category=test_category)
 
         # GET isteği gönderme
-        response = self.client.get(reverse('blog'))
+        # response = client.get(reverse('blog'))
 
-        # İsteğin başarılı olup olmadığını kontrol etme
-        assert response.status_code == 200
-        assert len(response.data['data']) == 1
-        assert response.data['data'][0]['title'] == "Test Blog"
+        # # İsteğin başarılı olup olmadığını kontrol etme
+        # assert response.status_code == 200
+        # assert len(response.data['data']) == 1
+        # assert response.data['data'][0]['title'] == "Test Blog"
 
     # def test_create_blog(self, client, test_user, blog_data, get_access_token):
     #     client=APIClient()

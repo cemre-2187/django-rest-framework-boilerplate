@@ -24,9 +24,15 @@ def test_blog(test_user, test_category):
     )
     
 @pytest.fixture
-def get_access_token(client, test_user):
+def get_access_token(client):
     url = '/account/login/'
     response = client.post(url, {'username': 'testuser', 'password': 'testpass'})
     assert response.status_code == 200
     print(response.data)
     return response.data['data']['access']
+
+@pytest.fixture
+def testfix():
+    testText='Hayy testine kurban'
+    print(testfix)
+    return testText

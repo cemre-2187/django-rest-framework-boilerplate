@@ -3,7 +3,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 
-@pytest.mark.usefixtures("test_user", "test_category", "test_blog", "admin_user", "get_access_token")
+# @pytest.mark.usefixtures("test_user", "test_category", "test_blog", "admin_user", "get_access_token")
 class BaseTestClient(TestCase):
     def setUp(self):
         self.client = APIClient()
