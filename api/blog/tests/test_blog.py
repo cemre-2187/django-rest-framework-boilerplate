@@ -5,9 +5,11 @@ from api.blog.models import Blog, Category
 from rest_framework.test import APIClient
 from api.core.tests.text_client import BaseTestClient
 
+@pytest.mark.django_db
 class TestBlogAPI(BaseTestClient):
 
     def test_get_blogs(self):
+        
         
         
         # Test bloğunu oluşturma
