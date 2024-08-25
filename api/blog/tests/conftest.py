@@ -33,6 +33,5 @@ def get_access_token(client):
 
 @pytest.fixture
 def testfix():
-    testText='Hayy testine kurban'
-    print(testfix)
-    return testText
+    print('Hallos')
+    return [1,2,3]
