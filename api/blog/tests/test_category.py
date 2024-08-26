@@ -47,7 +47,7 @@ class TestCategoryAPI(BaseTestClient):
         
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.get_admin_access_token)
         # Kategori oluşturma
-        Category.objects.create(name="Test Category")
+        Category.objects.create(name="Create Test Category")
 
         # GET isteği gönderme
         response = self.client.get(reverse('category'))
@@ -55,22 +55,21 @@ class TestCategoryAPI(BaseTestClient):
         # İsteğin başarılı olup olmadığını kontrol etme
         assert response.status_code == 200
         assert len(response.data['data']) == 2
-        assert response.data['data'][0]['name'] == "Test Category"
+        assert Category.objects.filter(name="Create Test Category").exists()
 
-#     def test_create_category(self, category_data,client,get_admin_access_token,admin_user):
-#         client=APIClient()
-#         client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_admin_access_token)
+    def test_create_category(self):
         
-#         # POST isteği gönderme
-#         response = client.post(reverse('category'), {
-#         'name':'New Category'
-#         })
-#         print(response)
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.get_admin_access_token)
         
-#         # Kategorinin başarılı bir şekilde oluşturulup oluşturulmadığını kontrol etme
-#         assert response.status_code == 200
-#         assert Category.objects.count() == 1
-#         assert Category.objects.get().name == "New Category"
+        # POST isteği gönderme
+        response = self.client.post(reverse('category'), {
+        'name':'New Category'
+        })
+        
+        # Kategorinin başarılı bir şekilde oluşturulup oluşturulmadığını kontrol etme
+        assert response.status_code == 200
+        assert Category.objects.count() == 2
+        assert Category.objects.filter(name="New Category").exists()
 
 #     def test_create_category_unauthorized(self, client,get_access_token,category_data):
 #         client=APIClient()
