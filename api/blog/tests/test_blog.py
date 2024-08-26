@@ -7,17 +7,15 @@ from api.core.tests.text_client import BaseTestClient
 from django.test import TestCase
 
 
-@pytest.fixture
-def testfix2():
-    print('Hallos')
-    return [1,2,3]
 @pytest.mark.django_db
-class TestBlogAPI(TestCase):
-    # @pytest.mark.usefixtures("test_user", "test_category", "test_blog", "admin_user", "get_access_token")
-    def test_get_blogs(testfix2):
-        print(testfix2)
+@pytest.mark.usefixtures("testfix")
+class TestBlogAPI:
+  
+    def test_get_blogs(self,testfix):
+        x=testfix
+        print(x)
         print('wtf')
-        assert testfix2==[1,2,3]
+        assert testfix == [1,2,3]
         # client=APIClient()
         # client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
         
