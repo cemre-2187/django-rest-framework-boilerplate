@@ -27,7 +27,7 @@ class TestBlogAPI(BaseTestClient):
         assert response.data['data'][0]['title'] == "Test Blog"
 
     def test_create_blog(self):
-        # Login For Admin User
+        # Login For  User
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.get_access_token)
         
         # POST isteği gönderme
@@ -39,22 +39,22 @@ class TestBlogAPI(BaseTestClient):
         # get blog with title filter
         assert Blog.objects.filter(title="Create Test Blog").exists()
 
-    # def test_create_blog_unauthorized(self, client, blog_data):
-    #     # Giriş yapmadan POST isteği gönderme
-    #     response = client.post(reverse('blog'), blog_data)
+    def test_create_blog_unauthorized(self):
+        # Giriş yapmadan POST isteği gönderme
+        response = self.client.post(reverse('blog'), self.blog_data)
 
-    #     # Blog oluşturma isteğinin yetkisiz olup olmadığını kontrol etme
-    #     assert response.status_code == 401
-    #     assert Blog.objects.count() == 0
+        # Blog oluşturma isteğinin yetkisiz olup olmadığını kontrol etme
+        assert response.status_code == 401
+        assert Blog.objects.count() == 1
 
-    # def test_create_blog_invalid_author(self, client, test_user, blog_data):
-    #     # Kullanıcıyı giriş yapmış gibi ayarla
-    #     client.login(username='testuser', password='testpass')
+    def test_create_blog_invalid_author(self, client, test_user, blog_data):
+        # Login For  User
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.get_access_token)
 
-    #     # Farklı bir yazar ile blog oluşturma denemesi
-    #     blog_data['author'] = test_user.id + 1
-    #     response = client.post(reverse('blog'), blog_data)
+        # Farklı bir yazar ile blog oluşturma denemesi
+        blog_data['author'] = test_user.id + 1
+        response = client.post(reverse('blog'), blog_data)
 
-    #     # Blog oluşturma isteğinin yetkisiz olup olmadığını kontrol etme
-    #     assert response.status_code == 401
-    #     assert Blog.objects.count() == 0
+        # Blog oluşturma isteğinin yetkisiz olup olmadığını kontrol etme
+        assert response.status_code == 401
+        assert Blog.objects.count() == 1
