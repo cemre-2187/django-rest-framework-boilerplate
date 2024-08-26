@@ -8,14 +8,14 @@ from django.test import TestCase
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures("testfix")
-class TestBlogAPI:
+class TestBlogAPI(BaseTestClient):
   
-    def test_get_blogs(self,testfix):
-        x=testfix
+    def test_get_blogs(self):
+        print(self)
+        x=self.testfix
         print(x)
         print('wtf')
-        assert testfix == [1,2,3]
+        assert self.testfix == [1,2,3]
         # client=APIClient()
         # client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
         
