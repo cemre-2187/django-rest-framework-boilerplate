@@ -24,6 +24,14 @@ def test_blog(test_user, test_category):
     )
     
 @pytest.fixture
+def blog_data(test_user, test_category):
+    return {
+        'title': 'Create Test Blog',
+        'content': 'This is a test blog content.',
+        'author': test_user.id,
+        'category': test_category.name
+    }
+@pytest.fixture
 def get_access_token(client):
     url = '/account/login/'
     response = client.post(url, {'username': 'testuser', 'password': 'testpass'})
@@ -32,6 +40,9 @@ def get_access_token(client):
     return response.data['data']['access']
 
 @pytest.fixture
-def testfix():
-    print('Hallos')
-    return [1,2,3]
+def get_admin_access_token(client):
+    url = '/account/login/'
+    response = client.post(url, {'username': 'admin', 'password': 'adminpass'})
+    print(response.data,"admin response")
+    assert response.status_code == 200
+    return response.data['data']['access']

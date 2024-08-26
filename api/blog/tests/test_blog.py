@@ -11,9 +11,9 @@ from django.test import TestCase
 class TestBlogAPI(BaseTestClient):
   
     def test_get_blogs(self):
-  
-        # client=APIClient()
-        # client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
+        
+        # Login For Test User
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.get_access_token)
         
         # Test bloğunu oluşturma
         Blog.objects.create(title="Test Blog", content="This is a test blog content.", author=self.test_user, category=self.test_category)
@@ -26,17 +26,18 @@ class TestBlogAPI(BaseTestClient):
         assert len(response.data['data']) == 2
         assert response.data['data'][0]['title'] == "Test Blog"
 
-    # def test_create_blog(self, client, test_user, blog_data, get_access_token):
-    #     client=APIClient()
-    #     client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
+    def test_create_blog(self):
+        # Login For Admin User
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.get_access_token)
         
-    #     # POST isteği gönderme
-    #     response = client.post(reverse('blog'), blog_data)
+        # POST isteği gönderme
+        response = self.client.post(reverse('blog'), self.blog_data)
 
-    #     # Blogun başarılı bir şekilde oluşturulup oluşturulmadığını kontrol etme
-    #     assert response.status_code == 200
-    #     assert Blog.objects.count() == 1
-    #     assert Blog.objects.get().title == "Test Blog"
+        # Blogun başarılı bir şekilde oluşturulup oluşturulmadığını kontrol etme
+        assert response.status_code == 200
+        assert Blog.objects.count() == 2
+        # get blog with title filter
+        assert Blog.objects.filter(title="Create Test Blog").exists()
 
     # def test_create_blog_unauthorized(self, client, blog_data):
     #     # Giriş yapmadan POST isteği gönderme
