@@ -71,13 +71,13 @@ class TestCategoryAPI(BaseTestClient):
         assert Category.objects.count() == 2
         assert Category.objects.filter(name="New Category").exists()
 
-#     def test_create_category_unauthorized(self, client,get_access_token,category_data):
-#         client=APIClient()
-#         client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
+    def test_create_category_unauthorized(self):
+       
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.get_access_token)
 
-#         # POST isteği gönderme
-#         response = client.post(reverse('category'), category_data)
+        # POST isteği gönderme
+        response = self.client.post(reverse('category'), self.category_data)
 
-#         # Kategori oluşturma isteğinin yetkisiz olup olmadığını kontrol etme
-#         assert response.status_code == 401
+        # Kategori oluşturma isteğinin yetkisiz olup olmadığını kontrol etme
+        assert response.status_code == 401
         

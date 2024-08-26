@@ -31,6 +31,13 @@ def blog_data(test_user, test_category):
         'author': test_user.id,
         'category': test_category.name
     }
+
+@pytest.fixture
+def category_data():
+    return {
+        'name':'New Category 2'
+    }
+    
 @pytest.fixture
 def get_access_token(client):
     url = '/account/login/'
