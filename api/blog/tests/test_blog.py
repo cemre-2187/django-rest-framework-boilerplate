@@ -11,24 +11,20 @@ from django.test import TestCase
 class TestBlogAPI(BaseTestClient):
   
     def test_get_blogs(self):
-        print(self)
-        x=self.testfix
-        print(x)
-        print('wtf')
-        assert self.testfix == [1,2,3]
+  
         # client=APIClient()
         # client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_access_token)
         
         # Test bloğunu oluşturma
-        # Blog.objects.create(title="Test Blog", content="This is a test blog content.", author=self.test_user, category=test_category)
+        Blog.objects.create(title="Test Blog", content="This is a test blog content.", author=self.test_user, category=self.test_category)
 
         # GET isteği gönderme
-        # response = client.get(reverse('blog'))
+        response = self.client.get(reverse('blog'))
 
         # # İsteğin başarılı olup olmadığını kontrol etme
-        # assert response.status_code == 200
-        # assert len(response.data['data']) == 1
-        # assert response.data['data'][0]['title'] == "Test Blog"
+        assert response.status_code == 200
+        assert len(response.data['data']) == 2
+        assert response.data['data'][0]['title'] == "Test Blog"
 
     # def test_create_blog(self, client, test_user, blog_data, get_access_token):
     #     client=APIClient()
