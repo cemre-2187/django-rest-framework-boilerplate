@@ -1,9 +1,9 @@
-# import pytest
-# from django.urls import reverse
-# from django.contrib.auth.models import User
-# from api.blog.models import Category
-# from rest_framework.test import APIClient
-
+import pytest
+from django.urls import reverse
+from django.contrib.auth.models import User
+from api.blog.models import Category
+from rest_framework.test import APIClient
+from api.core.tests.text_client import BaseTestClient
 
 
 # @pytest.fixture
@@ -39,23 +39,23 @@
 #     assert response.status_code == 200
 #     return response.data['data']['access']
 
-# @pytest.mark.django_db
-# class TestCategoryAPI:
+@pytest.mark.django_db
+class TestCategoryAPI(BaseTestClient):
 
 
-#     def test_get_categories(self, client,get_admin_access_token):
-#         client=APIClient()
-#         client.credentials(HTTP_AUTHORIZATION='Bearer ' + get_admin_access_token)
-#         # Kategori oluşturma
-#         Category.objects.create(name="Test Category")
+    def test_get_categories(self):
+        
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.get_admin_access_token)
+        # Kategori oluşturma
+        Category.objects.create(name="Test Category")
 
-#         # GET isteği gönderme
-#         response = client.get(reverse('category'))
+        # GET isteği gönderme
+        response = self.client.get(reverse('category'))
 
-#         # İsteğin başarılı olup olmadığını kontrol etme
-#         assert response.status_code == 200
-#         assert len(response.data['data']) == 1
-#         assert response.data['data'][0]['name'] == "Test Category"
+        # İsteğin başarılı olup olmadığını kontrol etme
+        assert response.status_code == 200
+        assert len(response.data['data']) == 2
+        assert response.data['data'][0]['name'] == "Test Category"
 
 #     def test_create_category(self, category_data,client,get_admin_access_token,admin_user):
 #         client=APIClient()
