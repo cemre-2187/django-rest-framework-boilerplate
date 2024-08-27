@@ -41,13 +41,11 @@ def get_access_token(client):
     url = '/account/login/'
     response = client.post(url, {'username': 'testuser', 'password': 'testpass'})
     assert response.status_code == 200
-    print(response.data)
     return response.data['data']['access']
 
 @pytest.fixture
 def get_admin_access_token(client):
     url = '/account/login/'
     response = client.post(url, {'username': 'admin', 'password': 'adminpass'})
-    print(response.data,"admin response")
     assert response.status_code == 200
     return response.data['data']['access']
