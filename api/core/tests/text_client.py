@@ -23,5 +23,6 @@ class BaseTestClient:
     
         
     def tearDown(self):
-        # Her testten sonra temiz bir ortam sağlamak için kullanılır.
+        # clean up
+        
         pass

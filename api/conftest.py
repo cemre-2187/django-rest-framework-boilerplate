@@ -1,33 +1,31 @@
 import pytest
 from django.contrib.auth.models import User
-from api.blog.models import Blog, Category
+from faker import Faker
+from api.core.tests.factories import UserFactory, CategoryFactory, BlogFactory
+
+faker = Faker()
 
 @pytest.fixture
 def test_user(db):
-    return User.objects.create_user(username='testuser', password='testpass')
+    return UserFactory(username='testuser', password='testpass')
 
 @pytest.fixture
 def admin_user(db):
-    return User.objects.create_superuser(username='admin', password='adminpass')
+    return UserFactory(username='admin', password='adminpass', is_staff=True, is_superuser=True)
 
 @pytest.fixture
 def test_category(db):
-    return Category.objects.create(name="Test Category")
+    return CategoryFactory(name="Test Category")
 
 @pytest.fixture
 def test_blog(test_user, test_category):
-    return Blog.objects.create(
-        title="Test Blog",
-        content="This is a test blog content.",
-        author=test_user,
-        category=test_category
-    )
-    
+    return BlogFactory(author=test_user, category=test_category)
+
 @pytest.fixture
 def blog_data(test_user, test_category):
     return {
-        'title': 'Create Test Blog',
-        'content': 'This is a test blog content.',
+        'title': faker.sentence(),
+        'content': faker.text(),
         'author': test_user.id,
         'category': test_category.name
     }
@@ -35,7 +33,7 @@ def blog_data(test_user, test_category):
 @pytest.fixture
 def category_data():
     return {
-        'name':'New Category 2'
+        'name': faker.word()
     }
     
 @pytest.fixture

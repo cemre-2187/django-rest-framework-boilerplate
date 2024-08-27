@@ -56,6 +56,8 @@ virtualenv = "20.26.3"
 xattr = "1.1.0"
 pytest = "^8.3.2"
 pytest-django = "^4.8.0"
+factory-boy = "^3.3.1"
+faker = "^28.0.0"
 
 
 [build-system]

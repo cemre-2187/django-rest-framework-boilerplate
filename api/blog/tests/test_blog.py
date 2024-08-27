@@ -35,9 +35,9 @@ class TestBlogAPI(BaseTestClient):
         # Check if the blog was created successfully
         assert response.status_code == 200
         assert Blog.objects.count() == 2
-        # Get blog with title filter
-        assert Blog.objects.filter(title="Create Test Blog").exists()
-
+        assert Blog.objects.filter(title=self.blog_data['title']).exists()
+                                                        
+                                                        
     def test_create_blog_unauthorized(self):
         # Send a POST request without logging in
         response = self.client.post(reverse('blog'), self.blog_data)
