@@ -21,8 +21,6 @@ class BaseTestClient:
         
         
     
-        
     def tearDown(self):
-        # clean up
-        
+        self.client.logout()
         pass
