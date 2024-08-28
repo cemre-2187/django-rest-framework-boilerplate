@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # 3rd party
     "rest_framework",
+    "drf_yasg",
     # Local Apps
     "api",
     "api.account",
