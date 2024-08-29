@@ -9,6 +9,45 @@ API view for handling user registration.
 Supports creating a new user by accepting user details and saving them in the database.
 '''
 class RegisterView(BaseAPIView):
+    @swagger_auto_schema(
+        operation_summary="User registration",
+        operation_description="Registers a new user by processing user-provided data.",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'first_name': openapi.Schema(type=openapi.TYPE_STRING, description='First name of the user', minLength=3, maxLength=255),
+                'last_name': openapi.Schema(type=openapi.TYPE_STRING, description='Last name of the user', minLength=3, maxLength=255),
+                'username': openapi.Schema(type=openapi.TYPE_STRING, description='Username for the user', minLength=3, maxLength=255),
+                'email': openapi.Schema(type=openapi.TYPE_STRING, format='email', description='Email address of the user'),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, description='Password for the user', writeOnly=True, minLength=6, maxLength=255),
+            },
+            required=['first_name', 'last_name', 'username', 'email', 'password'],
+        ),
+        responses={
+            201: openapi.Response(
+                description="User created successfully.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'status_code': openapi.Schema(type=openapi.TYPE_INTEGER, description='HTTP status code'),
+                        'status': openapi.Schema(type=openapi.TYPE_STRING, description='Status of the response (e.g., "success")'),
+                        'message': openapi.Schema(type=openapi.TYPE_STRING, description='Response message'),
+                    }
+                )
+            ),
+            400: openapi.Response(
+                description="User creation failed due to invalid input data.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'status_code': openapi.Schema(type=openapi.TYPE_INTEGER, description='HTTP status code'),
+                        'status': openapi.Schema(type=openapi.TYPE_STRING, description='Status of the response (e.g., "error")'),
+                        'message': openapi.Schema(type=openapi.TYPE_STRING, description='Error message'),
+                    }
+                )
+            ),
+        }
+    )
     def post(self, request):
         '''
         Registers a new user by processing user-provided data.
@@ -52,13 +91,31 @@ class LoginView(BaseAPIView):
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'message': openapi.Schema(type=openapi.TYPE_STRING, description='Success message'),
-                        'refresh': openapi.Schema(type=openapi.TYPE_STRING, description='Refresh token'),
-                        'access': openapi.Schema(type=openapi.TYPE_STRING, description='Access token'),
-                    },
-                ),
+                        'status_code': openapi.Schema(type=openapi.TYPE_INTEGER, description='HTTP status code'),
+                        'status': openapi.Schema(type=openapi.TYPE_STRING, description='Status of the response (e.g., "success")'),
+                        'message': openapi.Schema(type=openapi.TYPE_STRING, description='Response message'),
+                        'data': openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                'message': openapi.Schema(type=openapi.TYPE_STRING, description='Success message'),
+                                'refresh': openapi.Schema(type=openapi.TYPE_STRING, description='Refresh token'),
+                                'access': openapi.Schema(type=openapi.TYPE_STRING, description='Access token'),
+                            }
+                        ),
+                    }
+                )
             ),
-            400: openapi.Response(description="Login failed due to invalid credentials."),
+            400: openapi.Response(
+                description="Login failed due to invalid credentials.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'status_code': openapi.Schema(type=openapi.TYPE_INTEGER, description='HTTP status code'),
+                        'status': openapi.Schema(type=openapi.TYPE_STRING, description='Status of the response (e.g., "error")'),
+                        'message': openapi.Schema(type=openapi.TYPE_STRING, description='Error message'),
+                    }
+                )
+            ),
         }
     )
     def post(self, request):
