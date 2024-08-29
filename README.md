@@ -149,12 +149,3 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 ---
 
 This README file now provides detailed information about the project, including the account and blog applications and their URL configurations. You can further update it as needed for more specific details.
-
-#TODOS
-
-
- - Error handling(Will continue from here. I should check essays)
- 
-
- - Api Swagger(OpenAPI)
- - Postman Collection
