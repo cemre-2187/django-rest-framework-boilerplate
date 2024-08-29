@@ -7,6 +7,8 @@ from .models import Category  # Importing the Category model from the local app'
 from api.core.views import BaseAPIView  # Custom base view class for common API response methods
 from django.core.cache import cache  # Django's caching framework to optimize performance
 from api.core.services import StatsService  # Service class for business logic related to statistics
+from drf_yasg.utils import swagger_auto_schema # Utility function for generating Swagger documentation
+from drf_yasg import openapi # OpenAPI schema objects for generating Swagger documentation
 
 '''
 API view for handling operations related to blogs.
@@ -16,7 +18,38 @@ It ensures that only authenticated users can access these functionalities.
 class BlogView(BaseAPIView):
     permission_classes = [IsAuthenticated]  # Restricts access to authenticated users
     authentication_classes = [JWTAuthentication]  # Utilizes JWT tokens for user authentication
-
+    @swagger_auto_schema(
+        operation_summary="Retrieve list of blog entries",
+        operation_description="Retrieves a list of blog entries, optionally filtered by a search term in the title.",
+        manual_parameters=[
+            openapi.Parameter(
+                'search',
+                openapi.IN_QUERY,
+                description="Optional search term to filter blog entries by title",
+                type=openapi.TYPE_STRING
+            )
+        ],
+        responses={
+            200: openapi.Response(
+                description="A JSON response containing the list of blog entries.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'uid': openapi.Schema(type=openapi.TYPE_STRING, format='uuid', description='Unique ID'),
+                            'title': openapi.Schema(type=openapi.TYPE_STRING, description='Blog title'),
+                            'content': openapi.Schema(type=openapi.TYPE_STRING, description='Blog content'),
+                            'author': openapi.Schema(type=openapi.TYPE_INTEGER, description='Author ID'),
+                            'image': openapi.Schema(type=openapi.TYPE_STRING, description='Image URL'),
+                            'category': openapi.Schema(type=openapi.TYPE_INTEGER, description='Category ID'),
+                        },
+                    ),
+                ),
+            ),
+            401: "Unauthorized - authentication credentials were not provided or are invalid."
+        }
+    )
     def get(self, request):
         '''
         Retrieves a list of blog entries, optionally filtered by a search term.
@@ -36,7 +69,29 @@ class BlogView(BaseAPIView):
         
         serializer = BlogSerializer(blogs, many=True)  # Serialize the list of blog objects
         return self.success_response(data=serializer.data, message="Blogs fetched successfully")  # Return serialized data
-    
+    @swagger_auto_schema(
+        operation_summary="Create a new blog entry",
+        operation_description="Creates a new blog entry for the authenticated user.",
+        request_body=BlogSerializer,
+        responses={
+            201: openapi.Response(
+                description="Blog created successfully.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'uid': openapi.Schema(type=openapi.TYPE_STRING, format='uuid', description='Unique ID'),
+                        'title': openapi.Schema(type=openapi.TYPE_STRING, description='Blog title'),
+                        'content': openapi.Schema(type=openapi.TYPE_STRING, description='Blog content'),
+                        'author': openapi.Schema(type=openapi.TYPE_INTEGER, description='Author ID'),
+                        'image': openapi.Schema(type=openapi.TYPE_STRING, description='Image URL'),
+                        'category': openapi.Schema(type=openapi.TYPE_INTEGER, description='Category ID'),
+                    },
+                ),
+            ),
+            400: "Bad Request - invalid input data.",
+            401: "Unauthorized - you are not authorized to create a blog."
+        }
+    )
     def post(self, request):
         '''
         Creates a new blog entry for the authenticated user.
@@ -70,7 +125,26 @@ Implements caching to improve performance and reduce database load.
 class CategoryView(BaseAPIView):
     permission_classes = [IsAuthenticated]  # Restricts access to authenticated users
     authentication_classes = [JWTAuthentication]  # Utilizes JWT tokens for user authentication
-
+    @swagger_auto_schema(
+        operation_summary="Retrieve list of categories",
+        operation_description="Retrieves a list of categories, with caching support to optimize performance.",
+        responses={
+            200: openapi.Response(
+                description="A JSON response containing the list of categories.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='Category ID'),
+                            'name': openapi.Schema(type=openapi.TYPE_STRING, description='Category name'),
+                        },
+                    ),
+                ),
+            ),
+            401: "Unauthorized - authentication credentials were not provided or are invalid."
+        }
+    )
     def get(self, request):
         '''
         Retrieves a list of categories, with caching support to optimize performance.
@@ -92,7 +166,25 @@ class CategoryView(BaseAPIView):
             serializer = CategorySerializer(cached_categories, many=True)  # Use cached data if available
         
         return self.success_response(data=serializer.data, message="Categories fetched successfully")
-    
+    @swagger_auto_schema(
+        operation_summary="Create a new category",
+        operation_description="Creates a new category entry, ensuring only admin users can perform this action.",
+        request_body=CategorySerializer,
+        responses={
+            201: openapi.Response(
+                description="Category created successfully.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='Category ID'),
+                        'name': openapi.Schema(type=openapi.TYPE_STRING, description='Category name'),
+                    },
+                ),
+            ),
+            400: "Bad Request - invalid input data.",
+            401: "Unauthorized - you are not authorized to create a category."
+        }
+    )
     def post(self, request):
         '''
         Creates a new category entry, ensuring only admin users can perform this action.
@@ -123,7 +215,24 @@ This view allows retrieving various statistics, accessible only to authenticated
 class StatsView(BaseAPIView):
     permission_classes = [IsAuthenticated]  # Restricts access to authenticated users
     authentication_classes = [JWTAuthentication]  # Utilizes JWT tokens for user authentication
-    
+    @swagger_auto_schema(
+        operation_summary="Retrieve statistical data",
+        operation_description="Retrieves statistical data related to the application, including total blogs and total categories.",
+        responses={
+            200: openapi.Response(
+                description="A JSON response containing statistical data.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'total_blogs': openapi.Schema(type=openapi.TYPE_INTEGER, description='Total number of blogs'),
+                        'total_categories': openapi.Schema(type=openapi.TYPE_INTEGER, description='Total number of categories'),
+                        'message': openapi.Schema(type=openapi.TYPE_STRING, description='Response message'),
+                    },
+                ),
+            ),
+            401: "Unauthorized - authentication credentials were not provided or are invalid."
+        }
+    )
     def get(self, request):
         '''
         Retrieves statistical data related to the application.
