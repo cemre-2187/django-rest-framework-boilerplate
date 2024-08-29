@@ -34,6 +34,7 @@ This project provides a starting point for building RESTful web services using t
 - Python 3.8 or higher
 - PostgreSQL
 - Docker and Docker Compose (optional)
+- Poetry (optional, for dependency management)
 
 ### Step 1: Clone the Repository
 
@@ -42,20 +43,44 @@ git clone https://github.com/cemre-2187/django-rest-framework-boilerplate.git
 cd django-rest-framework-boilerplate
 ```
 
-### Step 2: Create and Activate a Virtual Environment
+### Step 2: Choose Your Dependency Management Method
 
-```bash
-python3 -m venv venv
-source venv/bin/activate  # For Windows: venv\Scripts\activate
-```
+You can either use a traditional virtual environment with `pip` or manage dependencies with Poetry. Follow one of the options below:
 
-### Step 3: Install Dependencies
+#### Option A: Using a Virtual Environment and `pip`
 
-```bash
-pip install -r requirements.txt
-```
+1. **Create and Activate a Virtual Environment**:
 
-### Step 4: Configure Environment Variables
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # For Windows: venv\Scripts\activate
+    ```
+
+2. **Install Dependencies**:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+#### Option B: Using Poetry
+
+1. **Install Poetry** (if not already installed):
+
+    ```bash
+    curl -sSL https://install.python-poetry.org | python3 -
+    ```
+
+    Make sure to add Poetry to your PATH as suggested by the installation instructions.
+
+2. **Install Dependencies** with Poetry:
+
+    ```bash
+    poetry install
+    ```
+
+    This command will create a virtual environment and install all required dependencies.
+
+### Step 3: Configure Environment Variables
 
 Copy the `.env.example` file to `.env` and update the necessary variables.
 
@@ -63,17 +88,34 @@ Copy the `.env.example` file to `.env` and update the necessary variables.
 cp .env.example .env
 ```
 
-### Step 5: Prepare the Database
+### Step 4: Prepare the Database
 
-```bash
-python manage.py migrate
-```
+1. **If using `pip` and a virtual environment**:
 
-### Step 6: Start the Development Server
+    ```bash
+    python manage.py migrate
+    ```
 
-```bash
-python manage.py runserver
-```
+2. **If using Poetry**, first activate the Poetry environment:
+
+    ```bash
+    poetry shell
+    python manage.py migrate
+    ```
+
+### Step 5: Start the Development Server
+
+1. **If using `pip` and a virtual environment**:
+
+    ```bash
+    python manage.py runserver
+    ```
+
+2. **If using Poetry**, make sure the Poetry environment is activated:
+
+    ```bash
+    python manage.py runserver
+    ```
 
 ### Using Docker (Optional)
 
@@ -100,7 +142,7 @@ Once the API server is running, the following endpoints will be available:
 
 ## API Documentation
 
-You can access the API documentation through Swagger UI. After starting the development server, go to `http://localhost:8000/swagger/`.
+You can access the API documentation through Swagger UI. After starting the development server, go to `http://localhost:8000/swagger` or `http://localhost:8000/redoc/`.
 
 ## Project Structure
 
@@ -148,4 +190,4 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ---
 
-This README file now provides detailed information about the project, including the account and blog applications and their URL configurations. You can further update it as needed for more specific details.
+This update includes both methods (using `pip` with a virtual environment and using Poetry) for setting up the project, providing flexibility for different development preferences.
