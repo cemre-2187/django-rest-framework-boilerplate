@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "125be5c7-c8c6-40cf-b7d1-10efa83089a8",
+		"name": "Django Boilerplarte ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "10028867"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"first\",\n \"last_name\": \"last\",\n\"username\": \"test\",\n \"email\": \"test@test.com\", \n \"password\":\"123456\"\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:8000/account/register/"
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"username\": \"cemre2\", \n \"password\":\"123456\"\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:8000/account/login/"
+			},
+			"response": []
+		},
+		{
+			"name": "Blog List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:8000/blog/"
+			},
+			"response": []
+		},
+		{
+			"name": "Create blog",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "Access Token"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "title 55555",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "DRF allows the creation of custom authentication classes and permissions tailored to your application’s needs. Let’s consider a scenario where a custom permission grants access based on specific user attributes.",
+							"type": "text"
+						},
+						{
+							"key": "author",
+							"value": "1",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "postman-cloud:///1ef55cc8-6e1d-4090-9109-3847485158a9"
+						}
+					]
+				},
+				"url": "http://127.0.0.1:8000/blog/"
+			},
+			"response": []
+		},
+		{
+			"name": "Category List",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "Access Token"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:8000/blog/category"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Category",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "http://127.0.0.1:8000/blog/category"
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:8000/blog/stats/",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "Access Token"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:8000/blog/stats/"
+			},
+			"response": []
+		}
+	]
+}
